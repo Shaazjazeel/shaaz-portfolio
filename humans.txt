@@ -1,0 +1,18 @@
+/* TEAM */
+  Developer: Shaaz Jazeel
+  Role: AI Engineer
+  Location: Kerala, India
+  Contact: hello@shaazjazeel.com
+
+/* SITE */
+  Last update: 2024/2025
+  Language: English
+  Tools: HTML, Vanilla CSS, JS, GSAP, Lenis, Vite
+
+           __       _            __  __  __
+      ___ / /  ___ | |      ___ / / / / / /
+     (_-</ _ \/ _ `| |    / _ `/ / / / / /
+    /___/_//_/\_,_/_/_____\_,_/_/ /_/ /_/
+                   /_____/
+
+   Built with ✦ and lots of AI magic.
