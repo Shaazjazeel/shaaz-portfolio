@@ -63,9 +63,7 @@ function initLenis() {
 /* ---- GSAP ANIMATIONS ---- */
 function initGSAP() {
   if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (prefersReducedMotion) return;
-
+  
   gsap.registerPlugin(ScrollTrigger);
 
   // Horizontal Scroll for Projects
@@ -73,79 +71,103 @@ function initGSAP() {
   const projectsContainer = document.getElementById('projectsContainer');
   
   if (projectsWrapper && projectsContainer) {
-    // We add a tiny bit of extra width to the scroll distance to ensure the last item is fully visible
-    let scrollWidth = projectsContainer.scrollWidth - window.innerWidth + window.innerWidth * 0.15; 
-    
-    let horizontalTween = gsap.to(projectsContainer, {
-      x: () => -scrollWidth,
-      ease: "none",
-      scrollTrigger: {
-        trigger: projectsWrapper,
-        pin: true,
-        scrub: 1, // Smooth scrubbing
-        start: "center center",
-        end: () => "+=" + scrollWidth,
-        invalidateOnRefresh: true,
-      }
-    });
+    let mm = gsap.matchMedia();
 
-    // 2. Image Reveal Mask & 3. Staggered Grid Animation for Projects
-    const projects = projectsContainer.querySelectorAll('.featured-project');
-    projects.forEach((proj, i) => {
-      const wrapper = proj.querySelector('.fp-image-wrapper');
-      const content = proj.querySelector('.fp-content');
+    // DESKTOP: Horizontal Scroll
+    mm.add("(min-width: 1025px)", () => {
+      let scrollWidth = projectsContainer.scrollWidth - window.innerWidth + window.innerWidth * 0.15; 
       
-      if (wrapper) {
-        ScrollTrigger.create({
-          trigger: proj,
-          containerAnimation: horizontalTween,
-          start: "left 85%",
-          onEnter: () => {
-            wrapper.classList.add('revealed');
-            if (content) {
-              gsap.fromTo(content, 
-                { opacity: 0, y: 30 },
-                { opacity: 1, y: 0, duration: 0.8, delay: 0.2, ease: "power3.out" }
-              );
-            }
-          }
-        });
-      }
-    });
-
-    // Option B: Cinematic Parallax for images
-    const fpImages = projectsContainer.querySelectorAll('.fp-image-wrapper img');
-    fpImages.forEach((img) => {
-      // Set initial state to scale 1.3 to give room for panning
-      gsap.set(img, { scale: 1.3, xPercent: -15, transformOrigin: "center center" });
-      
-      gsap.to(img, {
-        xPercent: 15,
+      let horizontalTween = gsap.to(projectsContainer, {
+        x: () => -scrollWidth,
         ease: "none",
         scrollTrigger: {
           trigger: projectsWrapper,
-          scrub: 1,
+          pin: true,
+          scrub: 1, // Smooth scrubbing
           start: "center center",
           end: () => "+=" + scrollWidth,
           invalidateOnRefresh: true,
         }
       });
 
-      // Hover Image Zoom (Tier 2)
-      const wrapper = img.closest('.fp-image-wrapper');
-      if (wrapper) {
-        wrapper.addEventListener('mouseenter', () => {
-          gsap.to(img, { scale: 1.35, duration: 0.8, ease: "power2.out", overwrite: "auto" });
+      // 2. Image Reveal Mask & 3. Staggered Grid Animation for Projects
+      const projects = projectsContainer.querySelectorAll('.featured-project');
+      projects.forEach((proj, i) => {
+        const wrapper = proj.querySelector('.fp-image-wrapper');
+        const content = proj.querySelector('.fp-content');
+        
+        if (wrapper) {
+          ScrollTrigger.create({
+            trigger: proj,
+            containerAnimation: horizontalTween,
+            start: "left 85%",
+            onEnter: () => {
+              wrapper.classList.add('revealed');
+              if (content) {
+                gsap.fromTo(content, 
+                  { opacity: 0, y: 30 },
+                  { opacity: 1, y: 0, duration: 0.8, delay: 0.2, ease: "power3.out" }
+                );
+              }
+            }
+          });
+        }
+      });
+
+      // Option B: Cinematic Parallax for images
+      const fpImages = projectsContainer.querySelectorAll('.fp-image-wrapper img');
+      fpImages.forEach((img) => {
+        gsap.set(img, { scale: 1.3, xPercent: -15, transformOrigin: "center center" });
+        
+        gsap.to(img, {
+          xPercent: 15,
+          ease: "none",
+          scrollTrigger: {
+            trigger: projectsWrapper,
+            scrub: 1,
+            start: "center center",
+            end: () => "+=" + scrollWidth,
+            invalidateOnRefresh: true,
+          }
         });
-        wrapper.addEventListener('mouseleave', () => {
-          gsap.to(img, { scale: 1.3, duration: 0.8, ease: "power2.out", overwrite: "auto" });
-        });
-      }
+
+        // Hover Image Zoom
+        const wrapper = img.closest('.fp-image-wrapper');
+        if (wrapper) {
+          wrapper.addEventListener('mouseenter', () => {
+            gsap.to(img, { scale: 1.35, duration: 0.8, ease: "power2.out", overwrite: "auto" });
+          });
+          wrapper.addEventListener('mouseleave', () => {
+            gsap.to(img, { scale: 1.3, duration: 0.8, ease: "power2.out", overwrite: "auto" });
+          });
+        }
+      });
     });
 
-
-
-  }
+    // MOBILE: Standard Vertical Scroll
+    mm.add("(max-width: 1024px)", () => {
+      const projects = projectsContainer.querySelectorAll('.featured-project');
+      projects.forEach((proj) => {
+        const wrapper = proj.querySelector('.fp-image-wrapper');
+        const content = proj.querySelector('.fp-content');
+        
+        if (wrapper) {
+          ScrollTrigger.create({
+            trigger: proj,
+            start: "top 85%",
+            onEnter: () => {
+              wrapper.classList.add('revealed');
+              if (content) {
+                gsap.fromTo(content, 
+                  { opacity: 0, y: 30 },
+                  { opacity: 1, y: 0, duration: 0.8, delay: 0.2, ease: "power3.out" }
+                );
+              }
+            }
+          });
+        }
+      });
+    });}
 }
 
 /* ---- LOADING SCREEN & SCRAMBLE TEXT ---- */
@@ -519,9 +541,7 @@ function initParallax() {
   const bgText = document.getElementById('heroBgText');
   if (!bgText) return;
   
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (prefersReducedMotion) return;
-
+  
   if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
     gsap.to(bgText, {
       y: 200,
@@ -550,9 +570,7 @@ function initParallax() {
 
 /* ---- CARD TILT ---- */
 function initCardTilt() {
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (prefersReducedMotion) return;
-
+  
   document.querySelectorAll('[data-tilt]').forEach(card => {
     card.addEventListener('mousemove', (e) => {
       const rect = card.getBoundingClientRect();
@@ -608,9 +626,7 @@ function animateCounter(el) {
   const duration = 1500;
   const start = performance.now();
   
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if(prefersReducedMotion){
-      el.textContent = target;
+        el.textContent = target;
       return;
   }
 
@@ -868,9 +884,7 @@ function initSkillsRadar() {
 
 /* ---- PROCESS STEPS STAGGER ---- */
 function initProcessReveal() {
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if(prefersReducedMotion) return;
-
+  
   const steps = document.querySelectorAll('.process-step');
   if(steps.length === 0) return;
 
