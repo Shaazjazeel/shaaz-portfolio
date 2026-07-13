@@ -1008,6 +1008,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initLocalTime();
   initKonamiCode();
   initThemeToggle();
+  initContactForm();
   console.log("%c✦ LINNK ENGINE ACTIVE ✦", "color: #E63946; font-size: 20px; font-weight: bold; font-family: monospace;");
 });
 
@@ -1058,6 +1059,55 @@ function initThemeToggle() {
 
     transition.finished.finally(() => {
       document.documentElement.classList.remove('theme-transition');
+    });
+  });
+}
+
+/* ---- CONTACT FORM HANDLER ---- */
+function initContactForm() {
+  const form = document.querySelector('.contact-form');
+  if (!form) return;
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // Access key injected by Vite during build/dev
+    const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
+
+    if (!accessKey) {
+      alert("Configuration Error: Web3Forms access key is missing. Please contact directly via email.");
+      return;
+    }
+
+    const formData = new FormData(form);
+    formData.append("access_key", accessKey);
+
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = 'Sending...';
+    submitBtn.disabled = true;
+
+    fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      body: formData
+    })
+    .then(async (response) => {
+      let json = await response.json();
+      if (response.status == 200) {
+        alert("Message sent successfully!");
+        form.reset();
+      } else {
+        console.log(response);
+        alert(json.message || "Something went wrong!");
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      alert("Something went wrong!");
+    })
+    .finally(() => {
+      submitBtn.innerHTML = originalText;
+      submitBtn.disabled = false;
     });
   });
 }
