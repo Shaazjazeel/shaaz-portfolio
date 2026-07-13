@@ -625,11 +625,6 @@ function animateCounter(el) {
   const target = parseInt(el.getAttribute('data-target'));
   const duration = 1500;
   const start = performance.now();
-  
-        el.textContent = target;
-      return;
-  }
-
   function update(now) {
     const progress = Math.min((now - start) / duration, 1);
     const eased = 1 - Math.pow(1 - progress, 3);
