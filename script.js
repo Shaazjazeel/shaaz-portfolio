@@ -3,6 +3,9 @@
    Phase 1+2: Polish + Wow Factor
    ============================================ */
 
+import { inject } from '@vercel/analytics';
+inject();
+
 let lenis; // Global lenis instance
 
 document.addEventListener('DOMContentLoaded', () => {
