@@ -432,11 +432,7 @@ function initBackToTop() {
 /* ---- (Moved Magnetic Buttons to end of file) ---- */
 /* ---- SCROLL REVEAL & CHOREOGRAPHY ---- */
 function initScrollReveal() {
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (prefersReducedMotion || typeof gsap === 'undefined') {
-    document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .section-line').forEach(el => el.classList.add('revealed'));
-    return;
-  }
+
 
   // 1. Connected Animation Timing (Choreography)
   const sections = document.querySelectorAll('.section');

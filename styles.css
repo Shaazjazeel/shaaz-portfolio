@@ -1182,25 +1182,6 @@ button:focus-visible,
 }
 .reveal-right.revealed { opacity: 1; transform: translateX(0); }
 
-/* ---- Prefers Reduced Motion ---- */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-  .loader { display: none; }
-  .reveal, .reveal-left, .reveal-right { opacity: 1; transform: none; }
-  .skill-tag { opacity: 1; transform: none; }
-  .process-step { opacity: 1; transform: none; }
-  .stat-item { opacity: 1; transform: none; }
-  .hero-greeting, .hero-title, .hero-bio, .hero-available { opacity: 1; }
-  .hero-photo { opacity: 1; }
-  .hero-badge { opacity: 1; }
-  .hero-name .word span { transform: none; }
-  .marquee-track { animation: none; }
-}
 
 /* ---- Responsive ---- */
 @media (max-width: 1024px) {
